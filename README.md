@@ -14,8 +14,6 @@ Most existing trackers assume a **precisely annotated bounding box** for initial
 
 CAT proposes a **unified click-based tracking framework** that enables reliable object tracking from only a **single user click**. The method bridges the gap between minimal user interaction and accurate target localization by introducing a click-based localization module, a spatial-visual prompt refinement mechanism, and a parameter-efficient mixture-of-experts adaptation.
 
-CAT can be seamlessly integrated with modern foundation trackers while requiring only lightweight additional parameters.
-
 ---
 
 ## Framework
