@@ -1,6 +1,6 @@
 # CAT: A Unified Click-and-Track Framework for Realistic Tracking
 
-Official implementation of **CAT (Click-And-Track)**.
+Official implementation of **CAT (Click-And-Track)**.（The code is being gradually updated. Stay tuned.）
 
 CAT introduces a realistic visual tracking paradigm where the target can be initialized by **a single click** instead of a precise bounding box. This greatly simplifies human interaction and better reflects real-world applications such as robotics, UAV tracking, and surveillance.
 
