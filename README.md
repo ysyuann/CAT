@@ -6,6 +6,17 @@ CAT introduces a realistic visual tracking paradigm where the target can be init
 
 📄 [Paper](https://openaccess.thecvf.com/content/ICCV2025/papers/Yuan_CAT_A_Unified_Click-and-Track_Framework_for_Realistic_Tracking_ICCV_2025_paper.pdf)
 : *CAT: A Unified Click-and-Track Framework for Realistic Tracking*, ICCV 2025
+## Pretrained Weights
+
+Pretrained model weights can be downloaded from Baidu Netdisk: [Baidu Netdisk](https://pan.baidu.com/s/1AxFpiz0tApVENfZG7K-d5A) (code: **5sfv**) |
+
+After downloading, please place the weights in:
+
+```
+checkpoints/
+```
+
+or the corresponding directory used in the tracking scripts.
 ---
 
 ## Overview
