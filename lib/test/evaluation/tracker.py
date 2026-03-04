@@ -63,7 +63,7 @@ class Tracker:
         tracker = self.tracker_class(params, self.dataset_name)
         return tracker
 
-    def run_sequence(self, seq, debug=None):
+    def run_sequence(self, seq, debug=None, load_init=0, init_select=None):
         """Run tracker on sequence.
         args:
             seq: Sequence to run the tracker on.
@@ -84,10 +84,10 @@ class Tracker:
 
         tracker = self.create_tracker(params)
 
-        output = self._track_sequence(tracker, seq, init_info)
+        output = self._track_sequence(tracker, seq, init_info, load_init=load_init, init_select=init_select)
         return output
 
-    def _track_sequence(self, tracker, seq, init_info):
+    def _track_sequence(self, tracker, seq, init_info, load_init=0, init_select=None):
         # Define outputs
         # Each field in output is a list containing tracker prediction for each frame.
 
@@ -118,7 +118,12 @@ class Tracker:
         image = self._read_image(seq.frames[0])
 
         start_time = time.time()
-        out = tracker.initialize(image, init_info)
+
+        init_info['dataset'] = seq.dataset
+        init_info['seq_name'] = seq.name
+
+        out = tracker.initialize(image, init_info, load_init=load_init, init_select=init_select)
+
         if out is None:
             out = {}
 
@@ -138,6 +143,8 @@ class Tracker:
 
             info = seq.frame_info(frame_num)
             info['previous_output'] = prev_output
+            if seq.language != None:
+                info['lang'] = seq.language
 
             if len(seq.ground_truth_rect) > 1:
                 info['gt_bbox'] = seq.ground_truth_rect[frame_num]

@@ -1,7 +1,7 @@
 import numpy as np
 from lib.test.evaluation.data import Sequence, BaseDataset, SequenceList
 from lib.test.utils.load_text import load_text
-
+import os
 
 class LaSOTDataset(BaseDataset):
     """
@@ -48,12 +48,14 @@ class LaSOTDataset(BaseDataset):
         target_visible = np.logical_and(full_occlusion == 0, out_of_view == 0)
 
         frames_path = '{}/{}/{}/img'.format(self.base_path, class_name, sequence_name)
+        lang_path = os.path.join(self.base_path, class_name, sequence_name, 'nlp.txt')
+        lang = str(load_text(str(lang_path), delimiter=(',', None), dtype=str))
 
         frames_list = ['{}/{:08d}.jpg'.format(frames_path, frame_number) for frame_number in range(1, ground_truth_rect.shape[0] + 1)]
 
         target_class = class_name
         return Sequence(sequence_name, frames_list, 'lasot', ground_truth_rect.reshape(-1, 4),
-                        object_class=target_class, target_visible=target_visible)
+                        object_class=target_class, target_visible=target_visible, language = lang)
 
     def __len__(self):
         return len(self.sequence_list)

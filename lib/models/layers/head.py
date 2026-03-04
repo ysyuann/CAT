@@ -3,7 +3,53 @@ import torch
 import torch.nn.functional as F
 
 from lib.models.layers.frozen_bn import FrozenBatchNorm2d
+from torch import Tensor
 
+class BN(nn.BatchNorm2d):
+    def forward(self, input: Tensor) -> Tensor:
+        self._check_input_dim(input)
+
+        # exponential_average_factor is set to self.momentum
+        # (when it is available) only so that it gets updated
+        # in ONNX graph when this node is exported to ONNX.
+        if self.momentum is None:
+            exponential_average_factor = 0.0
+        else:
+            exponential_average_factor = self.momentum
+
+
+        r"""
+        Decide whether the mini-batch stats should be used for normalization rather than the buffers.
+        Mini-batch stats are used in training mode, and in eval mode when buffers are None.
+        """
+        if self.training:
+            bn_training = True
+        else:
+            if self.track_running_stats:
+                bn_training = (self.running_mean is None) and (self.running_var is None)
+                running_mean = self.running_mean
+                running_var = self.running_var
+            else:
+                bn_training = True
+                running_mean = running_var = None
+
+        r"""
+        Buffers are only updated if they are to be tracked and we are in training mode. Thus they only need to be
+        passed when the update should occur (i.e. in training mode when they are tracked), or when buffer stats are
+        used for normalization (i.e. in eval mode when buffers are not None).
+        """
+        return F.batch_norm(
+            input,
+            # If buffers are not to be tracked, ensure that they won't be updated
+            self.running_mean
+            if self.training else running_mean,
+            self.running_var if self.training else running_var,
+            self.weight,
+            self.bias,
+            bn_training,
+            exponential_average_factor,
+            self.eps,
+        )
 
 def conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1,
          freeze_bn=False):
@@ -17,7 +63,8 @@ def conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1,
         return nn.Sequential(
             nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride,
                       padding=padding, dilation=dilation, bias=True),
-            nn.BatchNorm2d(out_planes),
+            # nn.BatchNorm2d(out_planes, track_running_stats=False),  #nn.BatchNorm2d  BN
+            BN(out_planes),
             nn.ReLU(inplace=True))
 
 
@@ -99,6 +146,7 @@ class CenterPredictor(nn.Module, ):
     def __init__(self, inplanes=64, channel=256, feat_sz=20, stride=16, freeze_bn=False):
         super(CenterPredictor, self).__init__()
         self.feat_sz = feat_sz
+        self.feat_sz_s2 = 16 if self.feat_sz==20 else 24
         self.stride = stride
         self.img_sz = self.feat_sz * self.stride
 
@@ -127,32 +175,39 @@ class CenterPredictor(nn.Module, ):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
-    def forward(self, x, gt_score_map=None):
+    def forward(self, x, gt_score_map=None, s='1', tracking_st = False):
         """ Forward pass with input x. """
+        if not self.training:
+            for n, m in self.named_modules():
+                m.track_running_stats = tracking_st
+
         score_map_ctr, size_map, offset_map = self.get_score_map(x)
 
         # assert gt_score_map is None
         if gt_score_map is None:
-            bbox = self.cal_bbox(score_map_ctr, size_map, offset_map)
+            if s == '1':
+                bbox = self.cal_bbox(score_map_ctr, size_map, offset_map, self.feat_sz)
+            else:
+                bbox = self.cal_bbox(score_map_ctr, size_map, offset_map, self.feat_sz_s2)
         else:
-            bbox = self.cal_bbox(gt_score_map.unsqueeze(1), size_map, offset_map)
+            if s=='1':
+                bbox = self.cal_bbox(gt_score_map.unsqueeze(1), size_map, offset_map, self.feat_sz)
+            else:
+                bbox = self.cal_bbox(gt_score_map.unsqueeze(1), size_map, offset_map, self.feat_sz_s2)
 
         return score_map_ctr, bbox, size_map, offset_map
 
-    def cal_bbox(self, score_map_ctr, size_map, offset_map, return_score=False):
+    def cal_bbox(self, score_map_ctr, size_map, offset_map, feat_sz, return_score=False):
         max_score, idx = torch.max(score_map_ctr.flatten(1), dim=1, keepdim=True)
-        idx_y = idx // self.feat_sz
-        idx_x = idx % self.feat_sz
+        idx_y = idx // feat_sz
+        idx_x = idx % feat_sz
 
         idx = idx.unsqueeze(1).expand(idx.shape[0], 2, 1)
         size = size_map.flatten(2).gather(dim=2, index=idx)
         offset = offset_map.flatten(2).gather(dim=2, index=idx).squeeze(-1)
 
-        # bbox = torch.cat([idx_x - size[:, 0] / 2, idx_y - size[:, 1] / 2,
-        #                   idx_x + size[:, 0] / 2, idx_y + size[:, 1] / 2], dim=1) / self.feat_sz
-        # cx, cy, w, h
-        bbox = torch.cat([(idx_x.to(torch.float) + offset[:, :1]) / self.feat_sz,
-                          (idx_y.to(torch.float) + offset[:, 1:]) / self.feat_sz,
+        bbox = torch.cat([(idx_x.to(torch.float) + offset[:, :1]) / feat_sz,
+                          (idx_y.to(torch.float) + offset[:, 1:]) / feat_sz,
                           size.squeeze(-1)], dim=1)
 
         if return_score:

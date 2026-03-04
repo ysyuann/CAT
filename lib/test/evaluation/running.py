@@ -17,11 +17,11 @@ def _save_tracker_output(seq: Sequence, tracker: Tracker, output: dict):
     if not os.path.exists(tracker.results_dir):
         print("create tracking result dir:", tracker.results_dir)
         os.makedirs(tracker.results_dir)
-    if seq.dataset in ['trackingnet', 'got10k']:
+    if seq.dataset in ['trackingnet', 'got10k', 'lasot', 'lasot_extension_subset', 'otb', 'uav123', 'uav112', 'dtb70', 'nfs', 'tnl2k', 'webuav_3m']:
         if not os.path.exists(os.path.join(tracker.results_dir, seq.dataset)):
             os.makedirs(os.path.join(tracker.results_dir, seq.dataset))
     '''2021.1.5 create new folder for these two datasets'''
-    if seq.dataset in ['trackingnet', 'got10k']:
+    if seq.dataset in ['trackingnet', 'got10k', 'lasot', 'lasot_extension_subset', 'otb', 'uav123', 'uav112', 'dtb70', 'nfs', 'tnl2k', 'webuav_3m']:
         base_results_path = os.path.join(tracker.results_dir, seq.dataset, seq.name)
     else:
         base_results_path = os.path.join(tracker.results_dir, seq.name)
@@ -102,7 +102,7 @@ def _save_tracker_output(seq: Sequence, tracker: Tracker, output: dict):
                 save_time(timings_file, data)
 
 
-def run_sequence(seq: Sequence, tracker: Tracker, debug=False, num_gpu=8):
+def run_sequence(seq: Sequence, tracker: Tracker, debug=False, num_gpu=8, load_init=0, init_select=None):
     """Runs a tracker on a sequence."""
     '''2021.1.2 Add multiple gpu support'''
     try:
@@ -115,7 +115,7 @@ def run_sequence(seq: Sequence, tracker: Tracker, debug=False, num_gpu=8):
 
     def _results_exist():
         if seq.object_ids is None:
-            if seq.dataset in ['trackingnet', 'got10k']:
+            if seq.dataset in ['trackingnet', 'got10k', 'lasot', 'lasot_extension_subset', 'otb', 'uav', 'nfs', 'tnl2k']:
                 base_results_path = os.path.join(tracker.results_dir, seq.dataset, seq.name)
                 bbox_file = '{}.txt'.format(base_results_path)
             else:
@@ -133,10 +133,10 @@ def run_sequence(seq: Sequence, tracker: Tracker, debug=False, num_gpu=8):
     print('Tracker: {} {} {} ,  Sequence: {}'.format(tracker.name, tracker.parameter_name, tracker.run_id, seq.name))
 
     if debug:
-        output = tracker.run_sequence(seq, debug=debug)
+        output = tracker.run_sequence(seq, debug=debug, load_init=load_init, init_select=init_select)
     else:
         try:
-            output = tracker.run_sequence(seq, debug=debug)
+            output = tracker.run_sequence(seq, debug=debug, load_init=load_init, init_select=init_select)
         except Exception as e:
             print(e)
             return
@@ -156,9 +156,9 @@ def run_sequence(seq: Sequence, tracker: Tracker, debug=False, num_gpu=8):
         _save_tracker_output(seq, tracker, output)
 
 
-def run_dataset(dataset, trackers, debug=False, threads=0, num_gpus=8):
+def run_dataset(dataset, trackers, debug=False, threads=0, num_gpus=8, load_init=0, init_select=None):
     """Runs a list of trackers on a dataset.
-    args:
+    args: with blond hair and bag in hand on the right of the crowd
         dataset: List of Sequence instances, forming a dataset.
         trackers: List of Tracker instances.
         debug: Debug level.
@@ -179,9 +179,9 @@ def run_dataset(dataset, trackers, debug=False, threads=0, num_gpus=8):
     if mode == 'sequential':
         for seq in dataset:
             for tracker_info in trackers:
-                run_sequence(seq, tracker_info, debug=debug)
+                run_sequence(seq, tracker_info, debug=debug, load_init=load_init, init_select=init_select)
     elif mode == 'parallel':
-        param_list = [(seq, tracker_info, debug, num_gpus) for seq, tracker_info in product(dataset, trackers)]
+        param_list = [(seq, tracker_info, debug, num_gpus, load_init, init_select) for seq, tracker_info in product(dataset, trackers)]
         with multiprocessing.Pool(processes=threads) as pool:
             pool.starmap(run_sequence, param_list)
     print('Done, total time: {}'.format(str(timedelta(seconds=(time.time() - dataset_start_time)))))
