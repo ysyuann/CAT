@@ -87,7 +87,7 @@ lib/test/evaluation/local.py    # paths about testing
 ## Evaluation
 
 Download the model [weights](https://pan.baidu.com/s/1AxFpiz0tApVENfZG7K-d5A) (code: **5sfv**). 
-Put the downloaded weights under: $PROJECT_ROOT$/output/checkpoints/train/CATos
+Put the downloaded weights under: YPUR_PROJECT_ROOT/output/checkpoints/train/CATos
 
 Change the corresponding values in the following file to the actual benchmark saving paths:
 lib/test/evaluation/local.py
