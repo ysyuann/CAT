@@ -1,6 +1,5 @@
-# language+scribe输入
 DATA:
-  MAX_SAMPLE_INTERVAL: 200  # need to ablate
+  MAX_SAMPLE_INTERVAL: 200
   MEAN:
     - 0.485
     - 0.456
@@ -10,7 +9,7 @@ DATA:
     FACTOR: 6.0
     SCALE_JITTER: 0.3
     SIZE: 384
-    NUMBER: 1             # need to ablate
+    NUMBER: 1
   STD:
     - 0.229
     - 0.224
@@ -21,33 +20,28 @@ DATA:
     SCALE_JITTER: 0
     SIZE: 192
     mask_ratio: 0
-  #  TRAIN:
-  #    DATASETS_NAME:
-  #      - GOT10K_train_full
-  #    DATASETS_RATIO:
-  #      - 1
-  #    SAMPLE_PER_EPOCH: 60000
+
 
   TRAIN:
     DATASETS_NAME:
       - LASOT
-#      - GOT10K_vottrain
-#      - COCO17
-#      - TRACKINGNET
-#      - WebUAV-3M
-#      - TNL2K
-#      - refcocog
-#      - VisualGenome
+      - GOT10K_vottrain
+      - COCO17
+      - TRACKINGNET
+      - WebUAV-3M
+      - TNL2K
+      - refcocog
+      - VisualGenome
 
     DATASETS_RATIO:
       - 1
-#      - 1
-#      - 1
-#      - 1
-#      - 1
-#      - 1
-#      - 1
-#      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
     SAMPLE_PER_EPOCH: 60000
   VAL:
     DATASETS_NAME:
@@ -57,13 +51,13 @@ DATA:
     SAMPLE_PER_EPOCH: 10000
 
 PEFT:
-  lora_class: hydra    # hydra   lora
+  lora_class: hydra
   reweight: True
   task_weight: False
   dim: 128
 
 MODEL:
-  PRETRAIN_FILE: '/home/space/works/MTTrack/pretrained_models/384_fromORI_OSTrack_ep0300.pth.tar' #"/home/space/works/MTTrack/pretrained_models/384_fromORI_OSTrack_ep0300.pth.tar" #"/15716608638/imagenet21k_ViT-B_16.npz"#"/15716608638/MTTrack/pretrained_models/mae_pretrain_vit_base.pth"  #"/15716608638/MTTrack/pretrained_models/OSTrack_ep0300.pth.tar"
+  PRETRAIN_FILE: None
   EXTRA_MERGER: False
   RETURN_INTER: False
   BACKBONE:
@@ -75,12 +69,12 @@ MODEL:
 TRAIN:
   BACKBONE_MULTIPLIER: 0.1
   DROP_PATH_RATE: 0.1
-  BATCH_SIZE: 2            # gai
+  BATCH_SIZE: 64
   EPOCH: 1000
   GIOU_WEIGHT: 2.0
   L1_WEIGHT: 5.0
   GRAD_CLIP_NORM: 0.1
-  LR: 0.0004  #0.0004            # gai
+  LR: 0.0004
   LR_DROP_EPOCH: 800
   NUM_WORKER: 10
   OPTIMIZER: ADAMW
@@ -92,11 +86,9 @@ TRAIN:
   WEIGHT_DECAY: 0.0001
   AMP: False
 TEST:
-  EPOCH: 1000  #1000
-#  SEARCH_FACTOR: 5.0
+  EPOCH: 1000
   SEARCH_SIZE_s1: 384
   SEARCH_SIZE_s2: 384
-#  SEARCH_SIZE: 384
   SEARCH_FACTOR_s2: 5.0
   TEMPLATE_FACTOR: 2.0
   TEMPLATE_SIZE: 192

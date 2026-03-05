@@ -13,6 +13,9 @@ class EnvSettings:
         self.otb_path = ''
         self.nfs_path = ''
         self.uav_path = ''
+        self.uav123_dir = ''
+        self.uav112_dir = ''
+        self.dtb70_dir = ''
         self.tpl_path = ''
         self.vot_path = ''
         self.got10k_path = ''
@@ -78,7 +81,9 @@ class EnvSettings_ITP:
         self.lasot_extension_subset_path_path = os.path.join(data_dir, 'lasot_extension_subset')
         self.davis_dir = ''
         self.youtubevos_dir = ''
-
+        self.uav123_dir = ''
+        self.uav112_dir = ''
+        self.dtb70_dir = ''
         self.got_packed_results_path = ''
         self.got_reports_path = ''
         self.tn_packed_results_path = ''

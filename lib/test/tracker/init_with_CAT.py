@@ -174,7 +174,7 @@ def main():
 
     param_module = importlib.import_module('lib.test.parameter.{}'.format('CATos'))
     params = param_module.parameters(args.tracker_param)
-    tracker_module = importlib.import_module('lib.test.tracker.{}'.format(args.tracker_name))
+    tracker_module = importlib.import_module('lib.test.tracker.{}'.format('init_with_CAT'))
     tracker_class = tracker_module.get_tracker_class()
     tracker = tracker_class(params)
     tracker.initialize(args.dataset_name)

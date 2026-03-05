@@ -12,11 +12,6 @@ import copy
 import math
 from torch import Tensor
 from PIL import Image
-import PIL
-from lib.test.tracker.utrack23_poi import Point
-from lib.test.tracker.utrack23_po import Polygon, get_bezier_curve
-from lib.test.tracker.utrack23_scr import Scribble
-from lib.test.tracker.utrack23_cir import Circle
 
 def stack_tensors(x):
     if isinstance(x, (list, tuple)) and isinstance(x[0], torch.Tensor):

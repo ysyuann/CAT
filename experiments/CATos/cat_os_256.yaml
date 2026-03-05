@@ -1,6 +1,5 @@
-# language+scribe输入
 DATA:
-  MAX_SAMPLE_INTERVAL: 200  # need to ablate
+  MAX_SAMPLE_INTERVAL: 200
   MEAN:
   - 0.485
   - 0.456
@@ -10,7 +9,7 @@ DATA:
     FACTOR: 6.0
     SCALE_JITTER: 0.3
     SIZE: 320
-    NUMBER: 1             # need to ablate
+    NUMBER: 1
   STD:
   - 0.229
   - 0.224
@@ -21,33 +20,27 @@ DATA:
     SCALE_JITTER: 0
     SIZE: 128
     mask_ratio: 0
-#  TRAIN:
-#    DATASETS_NAME:
-#      - GOT10K_train_full
-#    DATASETS_RATIO:
-#      - 1
-#    SAMPLE_PER_EPOCH: 60000
 
   TRAIN:
     DATASETS_NAME:
     - LASOT
-#    - GOT10K_vottrain
-#    - COCO17
-#    - TRACKINGNET
-#    - WebUAV-3M
-#    - TNL2K
-#    - refcocog
-#    - VisualGenome
+    - GOT10K_vottrain
+    - COCO17
+    - TRACKINGNET
+    - WebUAV-3M
+    - TNL2K
+    - refcocog
+    - VisualGenome
 
     DATASETS_RATIO:
     - 1
-#    - 1
-#    - 1
-#    - 1
-#    - 1
-#    - 1
-#    - 1
-#    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
     SAMPLE_PER_EPOCH: 60000
   VAL:
     DATASETS_NAME:
@@ -74,12 +67,12 @@ MODEL:
 TRAIN:
   BACKBONE_MULTIPLIER: 0.1
   DROP_PATH_RATE: 0.1
-  BATCH_SIZE: 64            # gai
-  EPOCH: 1001
+  BATCH_SIZE: 64
+  EPOCH: 1000
   GIOU_WEIGHT: 2.0
   L1_WEIGHT: 5.0
   GRAD_CLIP_NORM: 0.1
-  LR: 0.0004            # gai
+  LR: 0.0004
   LR_DROP_EPOCH: 400
   NUM_WORKER: 10
   OPTIMIZER: ADAMW
@@ -92,7 +85,6 @@ TRAIN:
   AMP: False
 TEST:
   EPOCH: 900
-#  SEARCH_FACTOR: 4.0
   SEARCH_SIZE_s1: 320
   SEARCH_SIZE_s2: 256
   SEARCH_FACTOR_s2: 4.0

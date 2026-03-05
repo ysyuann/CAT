@@ -1,24 +1,11 @@
 import math
 
-from lib.models.utrack25 import build_utrack25
-from lib.test.tracker.basetracker import BaseTracker
 import torch
-import random
-from lib.test.tracker.vis_utils import gen_visualization
-from lib.test.utils.hann import hann2d
-from lib.train.data.processing_utils import sample_target
-# for debug
 import cv2
 import os
 import numpy as np
 from PIL import Image
 import copy
-from lib.test.tracker.data_utils import Preprocessor
-from lib.utils.box_ops import clip_box
-from lib.utils.ce_utils import generate_mask_cond
-from lib.test.tracker.tpt import tpt
-from lib.test.tracker.utrack24_dataprocess import grounding_resize1, box_iou
-from lib.test.tracker.utrack24_dataprocess import gener_point_newyys1, samp1,gener_point_newyys1_gaus
 
 dataset_root = {
     'lasot': '/media/space/T7/LaSOT/dataset/images',
