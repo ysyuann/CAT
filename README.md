@@ -8,7 +8,10 @@ CAT introduces a realistic visual tracking paradigm where the target can be init
 : *CAT: A Unified Click-and-Track Framework for Realistic Tracking*, ICCV 2025
 ## Pretrained Weights
 
-Pretrained model weights can be downloaded from Baidu Netdisk: [Baidu Netdisk](https://pan.baidu.com/s/1AxFpiz0tApVENfZG7K-d5A) (code: **5sfv**) 
+Pretrained model weights can be downloaded from Baidu Netdisk: [Baidu Netdisk](https://pan.baidu.com/s/1e5n5drYm_muY34n8WO3kew?pwd=rspc) (code: **rspc**) 
+
+通过网盘分享的文件：
+链接: https://pan.baidu.com/s/1e5n5drYm_muY34n8WO3kew?pwd=rspc 提取码: rspc 复制这段内容后打开百度网盘手机App，操作更方便哦
 
 ---
 
