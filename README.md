@@ -99,7 +99,7 @@ lib/test/evaluation/local.py
 you can run the following command to execute only the initialization stage. 
 Since the sampling process of simulated clicks involves some randomness, the average IoU of each initialization may vary slightly across runs.
 ```bash
-python lib/test/tracker/init_with_CAT.py CATos cat_os_256 --dataset lasot
+python lib/test/tracker/init_with_CATos.py CATos cat_os_256 --dataset lasot
 ```
 
 2. The full click-based tracking process can be executed using the following command. 
