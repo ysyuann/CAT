@@ -136,7 +136,7 @@ def samp(mask):
     return pm_nz[idx] / wh
 
 
-def click_sample(gt, si, out_sz, factor=20):
+def click_sample(gt, si, out_sz, factor=20, prompt_len=0):
     hs, ws = si
     gt_i = gt.clone()
 
@@ -171,12 +171,13 @@ def click_sample(gt, si, out_sz, factor=20):
     mask = mask == 1
 
     # if mask.sum()!=0:
-    num = 30 if out_sz == 320 else 46
+    if prompt_len > 0:
+        num = prompt_len
+    else:
+        num = 30 if out_sz == 320 else 46
     pm_nz = mask[0].nonzero()
     idx = [0] * num
     return pm_nz[idx], mask
-    # else:
-    #     return 0
 
 
 def samp1(mask, out_sz):

@@ -16,7 +16,7 @@ from lib.test.tracker.init_data_process import click_sample, box_iou
 from lib.test.tracker.test_dataset_info import init_resize
 
 class CATos(BaseTracker):
-    def __init__(self, params, dataset_name):
+    def __init__(self, params):
         super(CATos, self).__init__(params)
         self.test = True
         self.iou = torch.tensor([0], dtype=torch.float64)

@@ -60,7 +60,7 @@ class Tracker:
             self.tracker_class = None
 
     def create_tracker(self, params):
-        tracker = self.tracker_class(params, self.dataset_name)
+        tracker = self.tracker_class(params)
         return tracker
 
     def run_sequence(self, seq, debug=None, load_init=0, init_select=None):

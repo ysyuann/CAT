@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch
 from torch import nn
 
-from lib.models.layers.head import build_box_head
+from .head import build_box_head
 from lib.models.CATos.vit_adp import vit_base_patch16_224
 from timm.models.layers import trunc_normal_
 

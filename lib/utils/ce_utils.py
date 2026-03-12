@@ -11,6 +11,16 @@ def generate_bbox_mask(bbox_mask, bbox):
         bbox_mask[i, int(bbox_i[1]):int(bbox_i[1] + bbox_i[3] - 1), int(bbox_i[0]):int(bbox_i[0] + bbox_i[2] - 1)] = 1
     return bbox_mask
 
+def generate_point_cond(bs, device):
+
+    template_feat_size = 7
+    index = slice(3, 4)
+
+    box_mask_z = torch.zeros([bs, template_feat_size, template_feat_size], device=device)
+    box_mask_z[:, index, index] = 1
+    box_mask_z = box_mask_z.flatten(1).to(torch.bool)
+
+    return box_mask_z
 
 def generate_mask_cond(cfg, bs, device, gt_bbox):
     template_size = cfg.DATA.TEMPLATE.SIZE
