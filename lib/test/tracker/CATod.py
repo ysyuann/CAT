@@ -19,8 +19,8 @@ class CATod(BaseTracker):
         super(CATod, self).__init__(params)
         network = build_cat_od(params.cfg, training=False)
         network.load_state_dict(torch.load(self.params.checkpoint, map_location='cpu'), strict=True)
-        network.track_query = torch.load('/home/space/works/ODTrack/tracking/track_query_for_init.pth.tar',
-                                         map_location='cuda')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        network.track_query = torch.load(os.path.join(current_dir, '../../../', 'tracking/track_query_for_init.pth.tar'),map_location='cuda')
 
         self.cfg = params.cfg
         self.network = network.cuda()
